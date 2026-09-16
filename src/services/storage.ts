@@ -68,7 +68,8 @@ export const StorageService = {
     // Automatically update if old address or old phone number is stored in localStorage
     if (
       stored.alamatSekretariat?.includes('Blok C') ||
-      stored.kontakSekretariat === '0812-2244-9876'
+      stored.kontakSekretariat === '0812-2244-9876' ||
+      stored.kontakSekretariat !== '+62 813-3216-6332'
     ) {
       const updated: PengurusRWInfo = {
         ...stored,

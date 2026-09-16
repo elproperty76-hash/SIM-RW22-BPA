@@ -24,6 +24,7 @@ import {
   Download,
   FileDown,
   Loader2,
+  MessageCircle,
 } from 'lucide-react';
 import {
   LaporanBulanan,
@@ -34,6 +35,7 @@ import {
   KegiatanPKK,
   JadwalPosyandu,
   FotoDokumentasi,
+  Warga,
 } from '../types';
 import { formatRupiah, formatDateIndo } from '../utils/formatters';
 import { GaleriDokumentasi } from './GaleriDokumentasi';
@@ -63,6 +65,7 @@ interface LaporanBulananManagerProps {
   kegiatanPKK?: KegiatanPKK[];
   jadwalPosyandu?: JadwalPosyandu[];
   onOpenPortalView: () => void;
+  wargaList?: Warga[];
 }
 
 export const LaporanBulananManager: React.FC<LaporanBulananManagerProps> = ({
@@ -73,12 +76,18 @@ export const LaporanBulananManager: React.FC<LaporanBulananManagerProps> = ({
   kegiatanPKK = [],
   jadwalPosyandu = [],
   onOpenPortalView,
+  wargaList = [],
 }) => {
   const [selectedLaporan, setSelectedLaporan] = useState<LaporanBulanan | null>(
     laporanList[0] || null
   );
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isPreviewPrintMode, setIsPreviewPrintMode] = useState(false);
+
+  // Bulk WhatsApp Broadcast state
+  const [isBulkWaModalOpen, setIsBulkWaModalOpen] = useState(false);
+  const [bulkMessageTemplate, setBulkMessageTemplate] = useState('');
+  const [bulkRtFilter, setBulkRtFilter] = useState('ALL');
 
   // Search and Date-Range Filter state
   const [searchQuery, setSearchQuery] = useState('');
@@ -783,6 +792,22 @@ export const LaporanBulananManager: React.FC<LaporanBulananManagerProps> = ({
                 <Printer className="w-4 h-4 text-slate-600" />
                 <span>Cetak Lembar Fisik</span>
               </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (!selectedLaporan) return;
+                  setBulkMessageTemplate(
+                    `PENGUMUMAN RESMI PENGURUS RW 22 BUMI PESONA ASRI\n\nLAPORAN BULANAN PERIODE: *${selectedLaporan.periodeBulan} ${selectedLaporan.tahun}*\n\nRingkasan Eksekutif:\n${selectedLaporan.ringkasan}\n\n📊 Rekap Keuangan Kas:\n- Kas Masuk: ${formatRupiah(selectedLaporan.totalKasMasuk)}\n- Kas Keluar: ${formatRupiah(selectedLaporan.totalKasKeluar)}\n- Saldo Akhir: ${formatRupiah(selectedLaporan.saldoAkhir)}\n\nMari bersama menjaga kerukunan, kebersihan, dan keamanan lingkungan RT 01 s/d RT 09.\n\n🌐 Akses Portal Transparansi Warga untuk rincian lengkap kegiatan.\n- Pengurus RW 22`
+                  );
+                  setIsBulkWaModalOpen(true);
+                }}
+                className="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-semibold flex items-center gap-1.5 transition shadow-xs"
+                title="Kirim pengumuman laporan bulanan secara serentak ke warga via WhatsApp"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>Kirim Pengumuman WA Serentak</span>
+              </button>
             </div>
           </div>
 
@@ -1192,6 +1217,123 @@ export const LaporanBulananManager: React.FC<LaporanBulananManagerProps> = ({
               >
                 <Send className="w-4 h-4" />
                 <span>Terbitkan Laporan untuk Warga</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* BULK WHATSAPP ANNOUNCEMENT BROADCAST MODAL */}
+      {isBulkWaModalOpen && selectedLaporan && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-fade-in overflow-y-auto">
+          <div className="bg-white rounded-2xl max-w-2xl w-full p-6 sm:p-7 shadow-2xl space-y-5 my-8">
+            <div className="flex justify-between items-center pb-4 border-b border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                  <MessageCircle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900">Broadcast Pengumuman Laporan Bulanan WA</h3>
+                  <p className="text-xs text-slate-500">Periode: {selectedLaporan.periodeBulan} {selectedLaporan.tahun}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsBulkWaModalOpen(false)}
+                className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Pesan Pengumuman Serentak</label>
+                <textarea
+                  rows={6}
+                  value={bulkMessageTemplate}
+                  onChange={(e) => setBulkMessageTemplate(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:outline-emerald-600 font-sans"
+                  placeholder="Isi pesan pengumuman laporan bulanan..."
+                />
+                <p className="text-[11px] text-slate-500 mt-1">
+                  Pesan di atas akan disiarkan ke daftar nomor WhatsApp warga RW 22 sesuai filter RT yang dipilih.
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pt-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-slate-700">Filter Wilayah RT:</span>
+                  <select
+                    value={bulkRtFilter}
+                    onChange={(e) => setBulkRtFilter(e.target.value)}
+                    className="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-medium focus:outline-emerald-600"
+                  >
+                    <option value="ALL">Semua Warga RW 22 (RT 01 - 09)</option>
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((rt) => (
+                      <option key={rt} value={rt}>RT 0{rt}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg">
+                  {wargaList.filter((w) => w.noHp && w.noHp.trim() !== '' && (bulkRtFilter === 'ALL' || w.rt.toString() === bulkRtFilter)).length} Warga memiliki No. HP aktif
+                </span>
+              </div>
+
+              <div className="max-h-60 overflow-y-auto border border-slate-200 rounded-xl divide-y divide-slate-100">
+                {wargaList.filter((w) => w.noHp && w.noHp.trim() !== '' && (bulkRtFilter === 'ALL' || w.rt.toString() === bulkRtFilter)).length > 0 ? (
+                  wargaList
+                    .filter((w) => w.noHp && w.noHp.trim() !== '' && (bulkRtFilter === 'ALL' || w.rt.toString() === bulkRtFilter))
+                    .map((warga) => {
+                      let cleanPhone = warga.noHp.replace(/\D/g, '');
+                      if (cleanPhone.startsWith('0')) {
+                        cleanPhone = '62' + cleanPhone.slice(1);
+                      }
+                      const waUrl = `https://wa.me/${cleanPhone}?text=` + encodeURIComponent(bulkMessageTemplate);
+
+                      return (
+                        <div key={warga.id} className="p-3 flex items-center justify-between hover:bg-slate-50 transition text-xs">
+                          <div>
+                            <span className="font-bold text-slate-900 block">{warga.nama}</span>
+                            <span className="text-[11px] text-slate-500">RT 0{warga.rt} • No HP: {warga.noHp}</span>
+                          </div>
+                          <a
+                            href={waUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold flex items-center gap-1.5 shadow-2xs transition"
+                          >
+                            <MessageCircle className="w-3.5 h-3.5" />
+                            <span>Kirim WA</span>
+                          </a>
+                        </div>
+                      );
+                    })
+                ) : (
+                  <div className="p-6 text-center text-slate-400 text-xs">
+                    Tidak ada warga dengan nomor HP valid pada filter RT yang dipilih.
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center pt-3 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(bulkMessageTemplate);
+                  alert('Template pengumuman berhasil disalin ke clipboard!');
+                }}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-medium text-xs transition"
+              >
+                Salin Pesan
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsBulkWaModalOpen(false)}
+                className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold text-xs transition"
+              >
+                Tutup
               </button>
             </div>
           </div>

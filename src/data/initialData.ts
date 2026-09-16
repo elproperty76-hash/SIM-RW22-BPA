@@ -24,6 +24,13 @@ export const INFO_RW22: PengurusRWInfo = {
   bendahara: 'Dadi Suhendar',
   alamatSekretariat: 'Balai Warga RW 22 Bumi Pesona Asri, Blok B, Desa Jelegong',
   kontakSekretariat: '+62 813-3216-6332',
+  pengumumanPenting: {
+    aktif: true,
+    judul: 'Himbauan Kerja Bakti Serentak & Kebersihan Lingkungan RW 22',
+    isi: 'Dimohon kepada seluruh warga RW 22 Bumi Pesona Asri (RT 01 s/d RT 09) untuk berpartisipasi aktif dalam kegiatan kerja bakti pembersihan saluran air dan fasilitas umum pada hari Minggu pukul 07.00 WIB guna menghadapi musim penghujan.',
+    tanggal: '2026-03-15',
+    prioritas: 'Penting',
+  },
 };
 
 export const DAFTAR_RT: PengurusRTInfo[] = [
@@ -1228,7 +1235,7 @@ export const INITIAL_LAPORAN: LaporanBulanan[] = [
       'Bagi warga yang baru pindah domisili atau menempati rumah kontrakan/sewa di lingkungan Bumi Pesona Asri, dimohon segera melapor ke Ketua RT setempat dengan membawa fotokopi KTP & KK.',
       'Jadwal pengangkutan sampah besar (kasur, dahan ranting pohon bekas tebangan) dilakukan setiap Sabtu minggu ke-2 dan ke-4.',
       'Dilarang memarkir kendaraan roda empat yang memakan badan jalan utama sehingga menghalangi laju mobil pemadam atau ambulans.',
-      'Pos Ronda aktif 24 jam dengan 4 personel keamanan. Nomor panggilan darurat keamanan pos utama: 0812-2244-9876.',
+      'Pos Ronda aktif 24 jam dengan 4 personel keamanan. Nomor panggilan darurat keamanan pos utama: +62 813-3216-6332.',
     ],
     ketuaRw: 'Soderi',
     sekretaris: 'Sunarto',

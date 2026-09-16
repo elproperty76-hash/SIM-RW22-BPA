@@ -15,6 +15,7 @@ import {
   Eye,
   X,
   UserCheck,
+  MessageCircle,
 } from 'lucide-react';
 import { Warga, PengurusRTInfo, RTNumber } from '../types';
 import { ImportRtModal } from './ImportRtModal';
@@ -271,12 +272,12 @@ export const WargaManager: React.FC<WargaManagerProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 pt-1">
           {/* Search bar */}
           <div className="relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Cari nama, NIK, alamat..."
+              placeholder="Cari berdasarkan Nama atau NIK warga..."
               className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-hidden"
             />
           </div>
@@ -448,6 +449,25 @@ export const WargaManager: React.FC<WargaManagerProps> = ({
                     {/* Actions */}
                     <td className="py-3 px-3.5 text-right whitespace-nowrap">
                       <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => {
+                            if (!item.noHp) return;
+                            let cleanPhone = item.noHp.replace(/\D/g, '');
+                            if (cleanPhone.startsWith('0')) {
+                              cleanPhone = '62' + cleanPhone.slice(1);
+                            }
+                            window.open(`https://wa.me/${cleanPhone}?text=` + encodeURIComponent(`Halo Bpk/Ibu ${item.nama}, salam dari Pengurus RW 22 Bumi Pesona Asri.`), '_blank');
+                          }}
+                          disabled={!item.noHp}
+                          className={`p-1.5 rounded-lg transition ${
+                            item.noHp
+                              ? 'text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50'
+                              : 'text-slate-300 cursor-not-allowed opacity-50'
+                          }`}
+                          title={item.noHp ? `Kirim WhatsApp ke ${item.nama}` : 'Nomor HP tidak tersedia'}
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                        </button>
                         <button
                           onClick={() => setSelectedWargaDetail(item)}
                           className="p-1.5 text-slate-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition"

@@ -21,6 +21,7 @@ import {
   Trash2,
   Edit2,
   Check,
+  MessageCircle,
 } from 'lucide-react';
 import {
   PasienPosyandu,
@@ -64,6 +65,11 @@ export const PosyanduManager: React.FC<PosyanduManagerProps> = ({
   // Jadwal Attendance / Participation Modal
   const [selectedJadwalForAttendance, setSelectedJadwalForAttendance] = useState<JadwalPosyandu | null>(null);
   const [isAddJadwalOpen, setIsAddJadwalOpen] = useState(false);
+
+  // WhatsApp Reminder Modal State
+  const [whatsappTargetJadwal, setWhatsappTargetJadwal] = useState<JadwalPosyandu | null>(null);
+  const [waMessageTemplate, setWaMessageTemplate] = useState<string>('');
+  const [waFilterRt, setWaFilterRt] = useState<string>('ALL');
 
   // Inventaris Modal
   const [isAddInventarisOpen, setIsAddInventarisOpen] = useState(false);
@@ -693,13 +699,28 @@ export const PosyanduManager: React.FC<PosyanduManagerProps> = ({
                           Mencakup warga balita & lansia perwakilan RT 01 s/d RT 09
                         </span>
                       </div>
-                      <button
-                        onClick={() => setSelectedJadwalForAttendance(jdw)}
-                        className="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold rounded-lg shadow-2xs text-xs flex items-center gap-1.5"
-                      >
-                        <ClipboardList className="w-3.5 h-3.5" />
-                        <span>Presensi Warga</span>
-                      </button>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => {
+                            setWhatsappTargetJadwal(jdw);
+                            setWaMessageTemplate(
+                              `Yth. Bpk/Ibu Warga RW 22,\n\nPengingat Giat Posyandu Anggrek Bulan:\n📅 *${jdw.judul}*\n🗓️ Tanggal: ${formatDateIndo(jdw.tanggal)} (${jdw.waktu})\n📍 Lokasi: ${jdw.lokasi}\n\nMohon kehadiran Bpk/Ibu sekalian. Terima kasih.\n- Pengurus RW 22 Bumi Pesona Asri`
+                            );
+                          }}
+                          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg shadow-2xs text-xs flex items-center gap-1.5 transition"
+                          title="Kirim pesan WhatsApp pengingat ke warga"
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" />
+                          <span>Kirim WA</span>
+                        </button>
+                        <button
+                          onClick={() => setSelectedJadwalForAttendance(jdw)}
+                          className="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold rounded-lg shadow-2xs text-xs flex items-center gap-1.5"
+                        >
+                          <ClipboardList className="w-3.5 h-3.5" />
+                          <span>Presensi</span>
+                        </button>
+                      </div>
                     </div>
 
                     {jdw.catatanHasil && (
@@ -1614,6 +1635,122 @@ export const PosyanduManager: React.FC<PosyanduManagerProps> = ({
               <button
                 onClick={() => setSelectedPatientDetail(null)}
                 className="px-4 py-1.5 bg-slate-900 text-white rounded-xl text-xs font-semibold"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* WHATSAPP REMINDER BROADCAST MODAL */}
+      {whatsappTargetJadwal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-fade-in overflow-y-auto">
+          <div className="bg-white rounded-2xl max-w-2xl w-full p-6 sm:p-7 shadow-2xl space-y-5 my-8">
+            <div className="flex justify-between items-center pb-4 border-b border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                  <MessageCircle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900">Kirim Pengingat WhatsApp Warga</h3>
+                  <p className="text-xs text-slate-500">Jadwal: {whatsappTargetJadwal.judul}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setWhatsappTargetJadwal(null)}
+                className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Template Pesan WhatsApp</label>
+                <textarea
+                  rows={5}
+                  value={waMessageTemplate}
+                  onChange={(e) => setWaMessageTemplate(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:outline-emerald-600 font-sans"
+                  placeholder="Tulis pesan pengingat..."
+                />
+                <p className="text-[11px] text-slate-500 mt-1">
+                  Pesan di atas akan dikirimkan dengan menggabungkan data nomor telepon warga dari modul data warga RW 22.
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pt-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-slate-700">Filter Wilayah RT:</span>
+                  <select
+                    value={waFilterRt}
+                    onChange={(e) => setWaFilterRt(e.target.value)}
+                    className="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-medium focus:outline-emerald-600"
+                  >
+                    <option value="ALL">Semua RT (01 - 09)</option>
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((rt) => (
+                      <option key={rt} value={rt}>RT 0{rt}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg">
+                  {wargaList.filter((w) => w.noHp && w.noHp.trim() !== '' && (waFilterRt === 'ALL' || w.rt.toString() === waFilterRt)).length} Warga memiliki No. HP
+                </span>
+              </div>
+
+              <div className="max-h-60 overflow-y-auto border border-slate-200 rounded-xl divide-y divide-slate-100">
+                {wargaList.filter((w) => w.noHp && w.noHp.trim() !== '' && (waFilterRt === 'ALL' || w.rt.toString() === waFilterRt)).length > 0 ? (
+                  wargaList
+                    .filter((w) => w.noHp && w.noHp.trim() !== '' && (waFilterRt === 'ALL' || w.rt.toString() === waFilterRt))
+                    .map((warga) => {
+                      let cleanPhone = warga.noHp.replace(/\D/g, '');
+                      if (cleanPhone.startsWith('0')) {
+                        cleanPhone = '62' + cleanPhone.slice(1);
+                      }
+                      const waUrl = `https://wa.me/${cleanPhone}?text=` + encodeURIComponent(waMessageTemplate);
+
+                      return (
+                        <div key={warga.id} className="p-3 flex items-center justify-between hover:bg-slate-50 transition text-xs">
+                          <div>
+                            <span className="font-bold text-slate-900 block">{warga.nama}</span>
+                            <span className="text-[11px] text-slate-500">RT 0{warga.rt} • HP: {warga.noHp}</span>
+                          </div>
+                          <a
+                            href={waUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold flex items-center gap-1.5 shadow-2xs transition"
+                          >
+                            <MessageCircle className="w-3.5 h-3.5" />
+                            <span>Kirim WA</span>
+                          </a>
+                        </div>
+                      );
+                    })
+                ) : (
+                  <div className="p-6 text-center text-slate-400 text-xs">
+                    Tidak ada warga dengan nomor HP valid pada filter yang dipilih.
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center pt-3 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(waMessageTemplate);
+                  alert('Template pesan berhasil disalin ke clipboard!');
+                }}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-medium text-xs transition"
+              >
+                Salin Template Pesan
+              </button>
+              <button
+                type="button"
+                onClick={() => setWhatsappTargetJadwal(null)}
+                className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold text-xs transition"
               >
                 Tutup
               </button>

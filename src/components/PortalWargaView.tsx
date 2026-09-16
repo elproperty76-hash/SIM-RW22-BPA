@@ -19,6 +19,7 @@ import {
   SlidersHorizontal,
   Printer,
   FileDown,
+  AlertCircle,
 } from 'lucide-react';
 import {
   PengurusRWInfo,
@@ -116,6 +117,51 @@ export const PortalWargaView: React.FC<PortalWargaViewProps> = ({
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
+      {/* PENGUMUMAN PENTING BANNER */}
+      {infoRW.pengumumanPenting?.aktif && (
+        <div className={`rounded-2xl p-5 sm:p-6 border shadow-lg relative overflow-hidden flex items-start gap-4 transition ${
+          infoRW.pengumumanPenting.prioritas === 'Darurat / Siaga'
+            ? 'bg-red-50 border-red-300 text-red-950 shadow-red-100'
+            : infoRW.pengumumanPenting.prioritas === 'Penting'
+            ? 'bg-amber-50 border-amber-300 text-amber-950 shadow-amber-100'
+            : 'bg-emerald-50 border-emerald-300 text-emerald-950 shadow-emerald-100'
+        }`}>
+          <div className={`p-3 rounded-xl flex items-center justify-center shrink-0 shadow-sm ${
+            infoRW.pengumumanPenting.prioritas === 'Darurat / Siaga'
+              ? 'bg-red-600 text-white animate-pulse'
+              : infoRW.pengumumanPenting.prioritas === 'Penting'
+              ? 'bg-amber-500 text-white'
+              : 'bg-emerald-600 text-white'
+          }`}>
+            <AlertCircle className="w-6 h-6" />
+          </div>
+          <div className="space-y-1.5 flex-1">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className={`text-[10px] uppercase font-black px-2.5 py-0.5 rounded-full shadow-2xs ${
+                  infoRW.pengumumanPenting.prioritas === 'Darurat / Siaga'
+                    ? 'bg-red-600 text-white'
+                    : infoRW.pengumumanPenting.prioritas === 'Penting'
+                    ? 'bg-amber-600 text-white'
+                    : 'bg-emerald-600 text-white'
+                }`}>
+                  PENGUMUMAN {infoRW.pengumumanPenting.prioritas}
+                </span>
+                {infoRW.pengumumanPenting.tanggal && (
+                  <span className="text-xs font-semibold text-slate-500">{infoRW.pengumumanPenting.tanggal}</span>
+                )}
+              </div>
+            </div>
+            <h3 className="text-base sm:text-lg font-extrabold tracking-tight">
+              {infoRW.pengumumanPenting.judul}
+            </h3>
+            <p className="text-xs sm:text-sm leading-relaxed opacity-90 font-medium">
+              {infoRW.pengumumanPenting.isi}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Top Banner Mode Warga */}
       <div className="bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -131,14 +177,6 @@ export const PortalWargaView: React.FC<PortalWargaViewProps> = ({
               Desa Jelegong, Kec. Rancaekek, Kab. Bandung 40394. Informasi terbuka laporan kegiatan bulanan, kas keuangan, agenda posyandu, dan layanan warga 9 RT.
             </p>
           </div>
-
-          <button
-            onClick={onOpenLogin}
-            className="px-4 py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-xs font-semibold text-white transition backdrop-blur-xs flex items-center gap-2"
-          >
-            <span>Login Admin</span>
-            <ChevronRight className="w-4 h-4" />
-          </button>
         </div>
       </div>
 

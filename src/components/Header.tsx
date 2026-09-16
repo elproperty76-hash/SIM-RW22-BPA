@@ -41,6 +41,8 @@ interface HeaderProps {
   isPortalMode: boolean;
   onTogglePortalMode: () => void;
   onDataChange: () => void;
+  isPengurusLoggedIn: boolean;
+  onOpenLogin: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -48,6 +50,8 @@ export const Header: React.FC<HeaderProps> = ({
   isPortalMode,
   onTogglePortalMode,
   onDataChange,
+  isPengurusLoggedIn,
+  onOpenLogin,
 }) => {
   const [showModalInfo, setShowModalInfo] = useState(false);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('synced');
@@ -168,20 +172,34 @@ export const Header: React.FC<HeaderProps> = ({
               </span>
             </div>
 
-            {/* Mode Switcher: Pengurus vs Portal Warga */}
-            <button
-              id="btn-toggle-portal"
-              onClick={onTogglePortalMode}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all shadow-sm ${
-                isPortalMode
-                  ? 'bg-amber-500 text-slate-950 font-semibold hover:bg-amber-400'
-                  : 'bg-emerald-600 text-white hover:bg-emerald-500'
-              }`}
-              title="Ganti tampilan antara Mode Pengurus dan Portal Transparansi Warga"
-            >
-              <Eye className="w-3.5 h-3.5" />
-              <span>{isPortalMode ? 'Mode Pengurus' : 'Portal Transparansi Warga'}</span>
-            </button>
+            {/* Mode Switcher / Login */}
+            {!isPengurusLoggedIn ? (
+              isPortalMode && (
+                <button
+                  id="btn-login-admin"
+                  onClick={onOpenLogin}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all shadow-sm bg-emerald-600 text-white hover:bg-emerald-500"
+                  title="Login Admin RW 22"
+                >
+                  <Shield className="w-3.5 h-3.5" />
+                  <span>Login Admin</span>
+                </button>
+              )
+            ) : (
+              <button
+                id="btn-toggle-portal"
+                onClick={onTogglePortalMode}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all shadow-sm ${
+                  isPortalMode
+                    ? 'bg-amber-500 text-slate-950 font-semibold hover:bg-amber-400'
+                    : 'bg-emerald-600 text-white hover:bg-emerald-500'
+                }`}
+                title={isPortalMode ? "Masuk ke Dashboard Admin" : "Lihat Portal Transparansi Warga"}
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span>{isPortalMode ? 'Dashboard Admin' : 'Portal Transparansi Warga'}</span>
+              </button>
+            )}
 
             {/* Quick backup button */}
             <button

@@ -43,7 +43,7 @@ export default function App() {
 
   // UI Navigation State
   const [activeTab, setActiveTab] = useState<TabKey>('dashboard');
-  const [isPortalMode, setIsPortalMode] = useState<boolean>(false);
+  const [isPortalMode, setIsPortalMode] = useState<boolean>(true);
   const [selectedRtFilter, setSelectedRtFilter] = useState<RTNumber | 'ALL'>('ALL');
   const [isImportModalOpen, setIsImportModalOpen] = useState<boolean>(false);
 
@@ -232,6 +232,8 @@ export default function App() {
         isPortalMode={isPortalMode}
         onTogglePortalMode={() => setIsPortalMode(!isPortalMode)}
         onDataChange={refreshAllData}
+        isPengurusLoggedIn={isPengurusLoggedIn}
+        onOpenLogin={() => setIsPengurusLoginModalOpen(true)}
       />
 
       {/* Main Tab Navigation Bar */}
@@ -306,7 +308,11 @@ export default function App() {
                 onSavePKK={handleSavePkk}
                 onSavePosyandu={handleSavePengurusPosyandu}
                 isLoggedIn={isPengurusLoggedIn}
-                onLogout={() => setIsPengurusLoggedIn(false)}
+                onLogout={() => {
+                  setIsPengurusLoggedIn(false);
+                  setIsPortalMode(true);
+                  setActiveTab('dashboard');
+                }}
               />
             )}
 
@@ -357,6 +363,7 @@ export default function App() {
                 kegiatanPKK={kegiatanPKK}
                 jadwalPosyandu={jadwalPosyandu}
                 onOpenPortalView={() => setIsPortalMode(true)}
+                wargaList={warga}
               />
             )}
           </>

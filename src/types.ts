@@ -33,6 +33,13 @@ export interface PengurusRWInfo {
   bendahara: string; // "Dadi Suhendar"
   alamatSekretariat: string;
   kontakSekretariat: string;
+  pengumumanPenting?: {
+    aktif: boolean;
+    judul: string;
+    isi: string;
+    tanggal: string;
+    prioritas: 'Info' | 'Penting' | 'Darurat / Siaga';
+  };
 }
 
 export interface PengurusRTInfo {

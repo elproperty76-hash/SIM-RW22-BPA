@@ -510,6 +510,110 @@ export const PengurusManager: React.FC<PengurusManagerProps> = ({
               </div>
             </div>
 
+            {/* PENGUMUMAN PENTING WARSGA SECTION */}
+            <div className="border-t border-slate-200 pt-5 space-y-4">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+                    Pengumuman Penting Warga (Tampil di Portal Warga)
+                  </h4>
+                  <p className="text-xs text-slate-500">
+                    Tampilkan pesan darurat, himbauan, atau informasi mendesak secara mencolok di halaman utama Portal Warga.
+                  </p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={rwForm.pengumumanPenting?.aktif || false}
+                    onChange={(e) =>
+                      setRwForm({
+                        ...rwForm,
+                        pengumumanPenting: {
+                          ...(rwForm.pengumumanPenting || {
+                            judul: '',
+                            isi: '',
+                            tanggal: new Date().toISOString().split('T')[0],
+                            prioritas: 'Penting',
+                          }),
+                          aktif: e.target.checked,
+                        },
+                      })
+                    }
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                  <span className="ml-2 text-xs font-semibold text-slate-700">
+                    {rwForm.pengumumanPenting?.aktif ? 'Aktif (Ditampilkan)' : 'Nonaktif'}
+                  </span>
+                </label>
+              </div>
+
+              {rwForm.pengumumanPenting?.aktif && (
+                <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-2xl space-y-3">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className="md:col-span-2">
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">Judul Pengumuman</label>
+                      <input
+                        type="text"
+                        value={rwForm.pengumumanPenting?.judul || ''}
+                        onChange={(e) =>
+                          setRwForm({
+                            ...rwForm,
+                            pengumumanPenting: {
+                              ...(rwForm.pengumumanPenting || { aktif: true, tanggal: '', prioritas: 'Penting', isi: '' }),
+                              judul: e.target.value,
+                            },
+                          })
+                        }
+                        className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-emerald-600 bg-white"
+                        placeholder="Contoh: Himbauan Waspada Banjir / Kerja Bakti"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">Tingkat Urgensi</label>
+                      <select
+                        value={rwForm.pengumumanPenting?.prioritas || 'Penting'}
+                        onChange={(e: any) =>
+                          setRwForm({
+                            ...rwForm,
+                            pengumumanPenting: {
+                              ...(rwForm.pengumumanPenting || { aktif: true, tanggal: '', judul: '', isi: '' }),
+                              prioritas: e.target.value,
+                            },
+                          })
+                        }
+                        className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold bg-white focus:outline-emerald-600"
+                      >
+                        <option value="Info">Info Publik</option>
+                        <option value="Penting">Penting</option>
+                        <option value="Darurat / Siaga">Darurat / Siaga</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">Isi Pesan / Keterangan Mendesak</label>
+                    <textarea
+                      rows={3}
+                      value={rwForm.pengumumanPenting?.isi || ''}
+                      onChange={(e) =>
+                        setRwForm({
+                          ...rwForm,
+                          pengumumanPenting: {
+                            ...(rwForm.pengumumanPenting || { aktif: true, tanggal: '', judul: '', prioritas: 'Penting' }),
+                            isi: e.target.value,
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-emerald-600 bg-white"
+                      placeholder="Tuliskan isi pengumuman penting secara jelas untuk dibaca seluruh warga..."
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div className="flex justify-end pt-3">
               <button
                 type="submit"
