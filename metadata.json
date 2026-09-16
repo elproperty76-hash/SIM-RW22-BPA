@@ -1,0 +1,6 @@
+{
+  "name": "SIM RW 22 Bumi Pesona Asri",
+  "description": "Sistem Informasi Manajemen Pengurus RW 22 Bumi Pesona Asri Desa Jelegong Kec. Rancaekek Kab. Bandung 40394",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
