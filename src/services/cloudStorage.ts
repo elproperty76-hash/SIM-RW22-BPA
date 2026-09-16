@@ -16,11 +16,13 @@ import {
   LaporanBulanan,
   PengurusRWInfo,
   PengurusRTInfo,
+  PengurusPosyandu,
   ItemInventaris,
 } from '../types';
 import {
   INFO_RW22,
   DAFTAR_RT,
+  INITIAL_PENGURUS_POSYANDU,
   INITIAL_WARGA,
   INITIAL_PKK,
   INITIAL_KEGIATAN_PKK,
@@ -46,6 +48,7 @@ export const CLOUD_KEYS = {
   LAPORAN: 'laporan',
   PENGURUS_RW: 'info_rw',
   PENGURUS_RT: 'daftar_rt',
+  PENGURUS_POSYANDU: 'pengurus_posyandu',
 } as const;
 
 export type CloudKey = (typeof CLOUD_KEYS)[keyof typeof CLOUD_KEYS];
@@ -225,9 +228,10 @@ export const CloudStorageService = {
   /**
    * Load all initial app data at once from Cloud Firestore
    */
-  async loadAllInitialData(): Promise<{
+   async loadAllInitialData(): Promise<{
     infoRW: PengurusRWInfo;
     daftarRT: PengurusRTInfo[];
+    pengurusPosyandu: PengurusPosyandu[];
     warga: Warga[];
     pkk: AnggotaPKK[];
     kegiatanPKK: KegiatanPKK[];
@@ -243,6 +247,7 @@ export const CloudStorageService = {
     const [
       infoRW,
       daftarRT,
+      pengurusPosyandu,
       warga,
       pkk,
       kegiatanPKK,
@@ -255,6 +260,7 @@ export const CloudStorageService = {
     ] = await Promise.all([
       loadFromCloud<PengurusRWInfo>(CLOUD_KEYS.PENGURUS_RW, INFO_RW22),
       loadFromCloud<PengurusRTInfo[]>(CLOUD_KEYS.PENGURUS_RT, DAFTAR_RT),
+      loadFromCloud<PengurusPosyandu[]>(CLOUD_KEYS.PENGURUS_POSYANDU, INITIAL_PENGURUS_POSYANDU),
       loadFromCloud<Warga[]>(CLOUD_KEYS.WARGA, INITIAL_WARGA),
       loadFromCloud<AnggotaPKK[]>(CLOUD_KEYS.PKK, INITIAL_PKK),
       loadFromCloud<KegiatanPKK[]>(CLOUD_KEYS.KEGIATAN_PKK, INITIAL_KEGIATAN_PKK),
@@ -271,6 +277,7 @@ export const CloudStorageService = {
     return {
       infoRW,
       daftarRT,
+      pengurusPosyandu,
       warga,
       pkk,
       kegiatanPKK,

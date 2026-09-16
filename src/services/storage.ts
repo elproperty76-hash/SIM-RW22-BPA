@@ -8,11 +8,13 @@ import {
   LaporanBulanan,
   PengurusRWInfo,
   PengurusRTInfo,
+  PengurusPosyandu,
   ItemInventaris,
 } from '../types';
 import {
   INFO_RW22,
   DAFTAR_RT,
+  INITIAL_PENGURUS_POSYANDU,
   INITIAL_WARGA,
   INITIAL_PKK,
   INITIAL_KEGIATAN_PKK,
@@ -36,6 +38,7 @@ const STORAGE_KEYS = {
   LAPORAN: 'sim_rw22_laporan_v1',
   PENGURUS_RW: 'sim_rw22_info_v1',
   PENGURUS_RT: 'sim_rw22_rt_v1',
+  PENGURUS_POSYANDU: 'sim_rw22_pengurus_posyandu_v1',
 };
 
 function getStored<T>(key: string, fallback: T): T {
@@ -89,6 +92,13 @@ export const StorageService = {
   },
   saveDaftarRT(list: PengurusRTInfo[]): void {
     setStored(STORAGE_KEYS.PENGURUS_RT, list);
+  },
+
+  getPengurusPosyandu(): PengurusPosyandu[] {
+    return getStored<PengurusPosyandu[]>(STORAGE_KEYS.PENGURUS_POSYANDU, INITIAL_PENGURUS_POSYANDU);
+  },
+  savePengurusPosyandu(list: PengurusPosyandu[]): void {
+    setStored(STORAGE_KEYS.PENGURUS_POSYANDU, list);
   },
 
   getWarga(): Warga[] {
@@ -184,6 +194,7 @@ export const StorageService = {
     localStorage.removeItem(STORAGE_KEYS.LAPORAN);
     localStorage.removeItem(STORAGE_KEYS.PENGURUS_RW);
     localStorage.removeItem(STORAGE_KEYS.PENGURUS_RT);
+    localStorage.removeItem(STORAGE_KEYS.PENGURUS_POSYANDU);
   },
 
   exportFullBackupJSON(): string {
@@ -192,6 +203,7 @@ export const StorageService = {
       exportedAt: new Date().toISOString(),
       pengurusRW: this.getPengurusRW(),
       daftarRT: this.getDaftarRT(),
+      pengurusPosyandu: this.getPengurusPosyandu(),
       warga: this.getWarga(),
       pkk: this.getAnggotaPKK(),
       kegiatanPKK: this.getKegiatanPKK(),

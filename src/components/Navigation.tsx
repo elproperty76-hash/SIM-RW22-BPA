@@ -2,6 +2,7 @@ import React from 'react';
 import {
   LayoutDashboard,
   Users,
+  ShieldCheck,
   HeartHandshake,
   Activity,
   Wallet,
@@ -9,13 +10,14 @@ import {
   Radio,
 } from 'lucide-react';
 
-export type TabKey = 'dashboard' | 'warga' | 'pkk' | 'posyandu' | 'kas' | 'laporan' | 'portal';
+export type TabKey = 'dashboard' | 'warga' | 'pengurus' | 'pkk' | 'posyandu' | 'kas' | 'laporan' | 'portal';
 
 interface NavigationProps {
   activeTab: TabKey;
   onSelectTab: (tab: TabKey) => void;
   counts: {
     warga: number;
+    pengurus: number;
     pkk: number;
     posyandu: number;
     transaksi: number;
@@ -40,6 +42,12 @@ export const Navigation: React.FC<NavigationProps> = ({
       label: 'Data Warga & Import RT',
       icon: Users,
       badge: counts.warga,
+    },
+    {
+      key: 'pengurus' as TabKey,
+      label: 'Kelola Pengurus',
+      icon: ShieldCheck,
+      badge: counts.pengurus,
     },
     {
       key: 'pkk' as TabKey,

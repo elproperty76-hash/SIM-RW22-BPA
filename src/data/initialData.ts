@@ -1,6 +1,7 @@
 import {
   PengurusRWInfo,
   PengurusRTInfo,
+  PengurusPosyandu,
   Warga,
   AnggotaPKK,
   KegiatanPKK,
@@ -35,6 +36,14 @@ export const DAFTAR_RT: PengurusRTInfo[] = [
   { rt: 7, namaKetua: 'Gunawan Prasetyo', kontak: '0813-1107-0007', blokWilayah: 'Blok G1 - G14' },
   { rt: 8, namaKetua: 'Hendra Gunawan', kontak: '0813-1108-0008', blokWilayah: 'Blok H1 - H15' },
   { rt: 9, namaKetua: 'Iwan Setiawan', kontak: '0813-1109-0009', blokWilayah: 'Blok I1 - I18' },
+];
+
+export const INITIAL_PENGURUS_POSYANDU: PengurusPosyandu[] = [
+  { id: 'pos-p-1', nama: 'Bidan Rina Melati, S.Tr.Keb', jabatan: 'Bidan Desa Pembina', rt: 1, noHp: '0812-3344-5566', statusAktif: true },
+  { id: 'pos-p-2', nama: 'Ibu Hj. Siti Aminah', jabatan: 'Ketua Kader Posyandu', rt: 1, noHp: '0813-1101-0002', statusAktif: true },
+  { id: 'pos-p-3', nama: 'Sri Wahyuni', jabatan: 'Kader Penimbangan RT 01', rt: 1, noHp: '0813-2211-3344', statusAktif: true },
+  { id: 'pos-p-4', nama: 'Dewi Lestari', jabatan: 'Kader PMT RT 02', rt: 2, noHp: '0813-2222-4455', statusAktif: true },
+  { id: 'pos-p-5', nama: 'Ratna Suminar', jabatan: 'Kader Lansia RW 22', rt: 3, noHp: '0813-3333-5566', statusAktif: true },
 ];
 
 export const INITIAL_WARGA: Warga[] = [

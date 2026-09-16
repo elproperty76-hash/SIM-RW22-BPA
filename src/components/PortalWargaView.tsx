@@ -39,7 +39,7 @@ interface PortalWargaViewProps {
   kas: TransaksiKas[];
   jadwalPosyandu: JadwalPosyandu[];
   kegiatanPKK: KegiatanPKK[];
-  onBackToAdmin: () => void;
+  onOpenLogin: () => void;
 }
 
 export const PortalWargaView: React.FC<PortalWargaViewProps> = ({
@@ -49,7 +49,7 @@ export const PortalWargaView: React.FC<PortalWargaViewProps> = ({
   kas,
   jadwalPosyandu,
   kegiatanPKK,
-  onBackToAdmin,
+  onOpenLogin,
 }) => {
   const [selectedReportId, setSelectedReportId] = useState<string>(laporan[0]?.id || '');
   const [reportSearchQuery, setReportSearchQuery] = useState('');
@@ -133,10 +133,10 @@ export const PortalWargaView: React.FC<PortalWargaViewProps> = ({
           </div>
 
           <button
-            onClick={onBackToAdmin}
+            onClick={onOpenLogin}
             className="px-4 py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-xs font-semibold text-white transition backdrop-blur-xs flex items-center gap-2"
           >
-            <span>Kembali ke Admin SIM RW</span>
+            <span>Login Admin</span>
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>

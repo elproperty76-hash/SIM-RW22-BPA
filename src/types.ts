@@ -42,6 +42,15 @@ export interface PengurusRTInfo {
   blokWilayah: string;
 }
 
+export interface PengurusPosyandu {
+  id: string;
+  nama: string;
+  jabatan: string;
+  rt: RTNumber;
+  noHp: string;
+  statusAktif: boolean;
+}
+
 export interface AnggotaPKK {
   id: string;
   nama: string;
